@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+require_relative "../base"
+
+require "thor"
+
+class FolderActions::CLI < Thor
+  option :config, type: :string, repeatable: true, required: true
+  desc "start", "Start watching folders from specified config files"
+  def start
+    app = FolderActions::App.new(config_files: options["config"])
+    app.start
+  end
+
+  option :config, type: :string, repeatable: true, required: true
+  desc "validate", "Validate the specified config files"
+  def validate
+    app = FolderActions::App.new(config_files: options["config"])
+    app.validate
+  end
+
+  class << self
+    def exit_on_failure?
+      true
+    end
+  end
+end
+
+FolderActions::CLI.start(ARGV)
