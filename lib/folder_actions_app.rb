@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 class FolderActions::App
-  attr_reader :entries, :config_files
+  attr_reader :config_files
 
   def initialize(config_files:)
-    @config_files = config_files.map do |config_file|
-      FolderActions::Config::YamlFile.new(file_path: File.expand_path(config_file))
-    end
-
-    @entries = @config_files.map(&:entries).inject(&:+)
+    @config_files = config_files
+    @entries = nil
   end
 
   def start
@@ -16,5 +13,12 @@ class FolderActions::App
 
   def validate
     puts "☑ Found #{ entries.count } #{ 'entry'.pluralize(entries.count) } in #{ config_files.count } #{ 'file'.pluralize(config_files.count) }."
+  end
+
+  private
+
+  def entries
+    # TODO: catch the FolderActions::ConfigError here and display a better message than a stacktrace
+    @entries ||= config_files.map { |c| FolderActions::Config::YamlFile.new(file_path: File.expand_path(c)).entries }.inject(&:+)
   end
 end

@@ -24,6 +24,10 @@ class FolderActions::Config::Base
       begin
         current = DEFAULT_CONFIG.merge(config.symbolize_keys)
 
+        @path = File.expand_path(current[:path])
+        raise FolderActions::ConfigError, "'path' #{ @path } does not exist" unless File.exists?(@path)
+        raise FolderActions::ConfigError, "'path' #{ @path } is not a directory" unless File.directory?(@path)
+
         @notification = config[:notification].presence
         @delete_original = !!config[:delete_original]
 
@@ -33,7 +37,6 @@ class FolderActions::Config::Base
         elsif current[:command].present?
           @command = current[:command].presence
           @file_pattern = current[:file_pattern].presence
-          @path = current[:path].presence
           raise FolderActions::ConfigError, "A 'command' entry must contain a 'path'" if path.blank?
         else
           raise FolderActions::ConfigError, "Each entry must have 'action_class' or 'command'"
