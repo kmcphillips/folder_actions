@@ -8,7 +8,7 @@ class FolderActions::Config::Base
   end
 
   class Entry
-    attr_reader :path, :notification, :file_pattern, :delete_original, :command, :action_class, :arguments
+    attr_reader :path, :notification, :file_pattern, :delete_original, :command, :action_class, :arguments, :on
 
     DEFAULT_CONFIG = {
       path: nil,
@@ -18,15 +18,25 @@ class FolderActions::Config::Base
       command: nil,
       action_class: nil,
       arguments: nil,
+      on: ["create"]
     }.freeze
+    VALID_ON = [ "create", "update" ].freeze
 
     def initialize(config)
       begin
         current = DEFAULT_CONFIG.merge(config.symbolize_keys)
 
-        @path = File.expand_path(current[:path])
-        raise FolderActions::ConfigError, "'path' #{ @path } does not exist" unless File.exists?(@path)
-        raise FolderActions::ConfigError, "'path' #{ @path } is not a directory" unless File.directory?(@path)
+        @path = Array(current[:path]).map { |p| File.expand_path(p) }
+        @path.each do |p|
+          raise FolderActions::ConfigError, "'path' #{ p } does not exist" unless File.exists?(p)
+          raise FolderActions::ConfigError, "'path' #{ p } is not a directory" unless File.directory?(p)
+        end
+
+        @on = Array(config[:on]).map(&:to_s).map(&:downcase)
+        @on.each do |o|
+          raise FolderActions::ConfigError, "'on' must be one of #{ VALID_ON }" unless VALID_ON.include?(o)
+        end
+        raise FolderActions::ConfigError, "'on' must be one of #{ VALID_ON }" if @on.empty?
 
         @notification = config[:notification].presence
         @delete_original = !!config[:delete_original]

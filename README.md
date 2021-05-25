@@ -29,7 +29,8 @@ A YAML config file contains a root element of `entries:` which is an array, each
 
 Keys may be:
 
-* `path`: Path to the folder to watch.
+* `path`: Path to the folder to watch, or an array of paths to watch.
+* `on`: The file action to watch, `create` `update`.
 * `notification`: System notification as a string.
 * `file_pattern`: String matcher for the file.
 * `delete_original`: Boolean if the original file should be deleted after the action.
