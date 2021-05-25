@@ -8,7 +8,7 @@ class FolderActions::Config::Base
   end
 
   class Entry
-    attr_reader :path, :notification, :file_pattern, :delete_original, :command, :action_class, :arguments, :on
+    attr_reader :path, :notification, :file_pattern, :delete_original, :command, :action_class, :arguments, :operation
 
     DEFAULT_CONFIG = {
       path: nil,
@@ -18,9 +18,9 @@ class FolderActions::Config::Base
       command: nil,
       action_class: nil,
       arguments: nil,
-      on: ["create"]
+      operation: ["create"],
     }.freeze
-    VALID_ON = [ "create", "update" ].freeze
+    VALID_OPERATION = [ "create", "update" ].freeze
 
     def initialize(config)
       begin
@@ -32,14 +32,14 @@ class FolderActions::Config::Base
           raise FolderActions::ConfigError, "'path' #{ p } is not a directory" unless File.directory?(p)
         end
 
-        @on = Array(config[:on]).map(&:to_s).map(&:downcase)
-        @on.each do |o|
-          raise FolderActions::ConfigError, "'on' must be one of #{ VALID_ON }" unless VALID_ON.include?(o)
+        @operation = Array(current[:operation]).map(&:to_s).map(&:downcase)
+        @operation.each do |o|
+          raise FolderActions::ConfigError, "'operation' must be one of #{ VALID_OPERATION }" unless VALID_OPERATION.include?(o)
         end
-        raise FolderActions::ConfigError, "'on' must be one of #{ VALID_ON }" if @on.empty?
+        raise FolderActions::ConfigError, "'operation' must be one of #{ VALID_OPERATION }" if @operation.empty?
 
-        @notification = config[:notification].presence
-        @delete_original = !!config[:delete_original]
+        @notification = current[:notification].presence
+        @delete_original = !!current[:delete_original]
 
         if current[:action_class].present?
           @action_class = current[:action_class].constantize
@@ -56,6 +56,30 @@ class FolderActions::Config::Base
       rescue => e
         raise FolderActions::ConfigError.new(e)
       end
+    end
+
+    def to_s
+      tokens = [
+        "Watch",
+        path.join(" "),
+        "on",
+        operation.join("/"),
+        "and",
+      ]
+
+      if action_class
+        tokens << "use #{ action_class } with #{arguments}"
+      elsif command
+        tokens << "call \"#{ command }\""
+        tokens << "on #{ file_pattern }" if file_pattern
+      else
+        # TODO
+        "unkown action?"
+      end
+
+      tokens << "and notify" if notification
+
+      tokens.reject(&:blank?).join(" ")
     end
   end
 end

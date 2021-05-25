@@ -1,24 +1,39 @@
 # frozen_string_literal: true
 class FolderActions::App
-  attr_reader :config_files
+  attr_reader :config_files, :watcher
 
   def initialize(config_files:)
     @config_files = config_files
     @entries = nil
+    @watcher = FolderActions::Watcher.new
   end
 
   def start
-    # TODO
+    entries
+    puts "Starting #{ entries.count } #{ 'entry'.pluralize(entries.count) }..."
+
+    entries.each do |entry|
+      watcher.add_entry(entry)
+      puts "  #{ entry.to_s }"
+    end
+
+    watcher.run
   end
 
   def validate
-    puts "☑ Found #{ entries.count } #{ 'entry'.pluralize(entries.count) } in #{ config_files.count } #{ 'file'.pluralize(config_files.count) }."
+    begin
+      entries
+      puts "☑ Found #{ entries.count } #{ 'entry'.pluralize(entries.count) } in #{ config_files.count } #{ 'file'.pluralize(config_files.count) }."
+    rescue FolderActions::ConfigError => e
+      puts "❎ Found #{ config_files.count } #{ 'file'.pluralize(config_files.count) } but error in entry: #{ e.message }."
+    end
   end
 
   private
 
   def entries
-    # TODO: catch the FolderActions::ConfigError here and display a better message than a stacktrace
-    @entries ||= config_files.map { |c| FolderActions::Config::YamlFile.new(file_path: File.expand_path(c)).entries }.inject(&:+)
+    @entries ||= config_files.map { |c|
+      FolderActions::Config::YamlFile.new(file_path: File.expand_path(c)).entries
+    }.inject(&:+)
   end
 end
