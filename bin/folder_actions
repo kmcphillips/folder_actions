@@ -19,6 +19,13 @@ class FolderActions::CLI < Thor
     app.validate
   end
 
+  option :config, type: :string, repeatable: true, required: true
+  desc "debug", "Open a `pry` session to debug."
+  def debug
+    app = FolderActions::App.new(config_files: options["config"])
+    binding.pry
+  end
+
   class << self
     def exit_on_failure?
       true
