@@ -3,9 +3,9 @@ require "pry"
 require "active_support/all"
 require "logger"
 require "tempfile"
-require "open3"
 require "yaml"
 require "rb-inotify"
+require "systemcall"
 
 module FolderActions
   class << self
@@ -22,6 +22,7 @@ require_relative "lib/config"
 require_relative "lib/config/base"
 require_relative "lib/config/yaml_file"
 
+require_relative "lib/notifier"
 require_relative "lib/watcher"
 
 require_relative "lib/action"

@@ -19,6 +19,7 @@ GEM
       method_source (~> 1.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    systemcall (1.0.3)
     thor (1.1.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
@@ -31,6 +32,7 @@ DEPENDENCIES
   activesupport
   pry
   rb-inotify
+  systemcall
   thor
 
 BUNDLED WITH
