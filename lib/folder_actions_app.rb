@@ -17,6 +17,7 @@ class FolderActions::App
       puts "  #{ entry.to_s }"
     end
 
+    puts "Watching..."
     watcher.run
   end
 

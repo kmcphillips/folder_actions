@@ -3,9 +3,11 @@ require "pry"
 require "active_support/all"
 require "logger"
 require "tempfile"
+require "ruby-handlebars"
 require "yaml"
 require "rb-inotify"
 require "systemcall"
+require "fileutils"
 
 module FolderActions
   class << self

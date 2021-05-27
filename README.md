@@ -32,7 +32,7 @@ Keys may be:
 * `path`: Path to the folder to watch, or an array of paths to watch.
 * `operation`: The file action to watch, `create` `update`. (Note: I wanted to call this `on` but that evaluates to `true` in YAML 🙃)
 * `notification`: System notification as a string.
-* `file_pattern`: String matcher for the file.
+* `file_pattern`: String matcher for the file. This is what would match a _glob_ in shell, not a regex.
 * `delete_original`: Boolean if the original file should be deleted after the action.
 * `command`: String executed.
 * `action_class`: A class in the project that performs the folder action.

@@ -12,8 +12,10 @@ module FolderActions::Notifier
   end
 
   class LinuxNotifySend
-    def notify(title:, body:)
-      result = SystemCall.call("notify-send", title, body)
+    def notify(title:, body:, error: false)
+      args = ["notify-send", title, body]
+      args << "--urgency=critical" if error
+      result = SystemCall.call(args)
       raise FolderActions::Error, "Could not call `notify-send`: #{ result.error_result }" unless result.success?
       true
     end
