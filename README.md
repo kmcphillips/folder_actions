@@ -25,6 +25,8 @@ bin/folder_actions validate --config path/to/other/config.yml
 
 ### YAML
 
+See `examples/example_config.yml`.
+
 A YAML config file contains a root element of `entries:` which is an array, each containing an entry.
 
 Keys may be:

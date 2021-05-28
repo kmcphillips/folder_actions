@@ -1,0 +1,8 @@
+entries:
+  -
+    path: /path/to/aif/files
+    notification: "Converted {{file_name}} to wav."
+    file_pattern: "*.aif"
+    operation: create
+    delete_original: true
+    command: "ffmpeg -i \"{{file}}\" \"{{file}}.wav\""
