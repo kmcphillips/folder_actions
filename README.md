@@ -34,7 +34,7 @@ Keys may be:
 * `notification`: System notification as a string.
 * `file_pattern`: String matcher for the file. This is what would match a _glob_ in shell, not a regex.
 * `delete_original`: Boolean if the original file should be deleted after the action.
-* `command`: String executed.
+* `command`: String command or array of strings to be executed in order. Stops when one command exits non-zero.
 * `action_class`: A class in the project that performs the folder action.
 * `arguments`: Args passed to the construcor for the above class.
 
@@ -42,4 +42,5 @@ Keys may be:
 Handlebar templates are used to interpolate the following strings:
 
 * `{{file_name}}`: The name of the file without the path.
-* `{{file_path}}`: The full path of the file.
+* `{{file_path}}`: The path of the file of the file without file name.
+* `{{file}}`: The full literal file name and path.

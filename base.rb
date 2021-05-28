@@ -30,4 +30,7 @@ require_relative "lib/watcher"
 require_relative "lib/action"
 require_relative "lib/action/resize_image"
 
+require_relative "lib/actor"
+require_relative "lib/actor/command_actor"
+
 require_relative "lib/folder_actions_app"

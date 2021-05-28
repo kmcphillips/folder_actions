@@ -45,7 +45,7 @@ class FolderActions::Config::Base
           @action_class = current[:action_class].constantize
           @arguments = current[:arguments] || {}
         elsif current[:command].present?
-          @command = current[:command].presence
+          @command = Array(current[:command]).map(&:presence)
           @file_pattern = current[:file_pattern].presence
           raise FolderActions::ConfigError, "A 'command' entry must contain a 'path'" if path.blank?
         else
