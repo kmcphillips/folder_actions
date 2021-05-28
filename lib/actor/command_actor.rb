@@ -22,16 +22,22 @@ class FolderActions::Actor::CommandActor
     @ran = true
 
     entry.command.each do |command|
-      # TODO command
-      puts "TODO: running #{ template(command) }"
-      # TODO set @success = false and @notification on fail
-      # { title: "Folder Actions", body: "Error processing file #{ file_name } with command #{ command }", error: true }
+      templated_command = template(command)
+      puts "Running: #{ templated_command }"
+      result = SystemCall.call(templated_command)
+      if !result.success?
+        puts "Error: #{ result.error_result }"
+        @success = false
+        @notification = { title: "Folder Actions", body: "Error processing file #{ file_name } with command #{ templated_command }", error: true }
+
+        return false
+      end
     end
 
     @success = true
     @notification = { title: "Folder Actions", body: template(entry.notification), error: false }
 
-    success?
+    true
   end
 
   def success?
